@@ -1,6 +1,6 @@
 from variables import window, key, mouse, state
-from variables import menuFundo, start, options, leave, start1, options1, leave1
-from variables import gameFundo, personagem, bowl_1, bowl_2, bowl_3, life_puzzle, life_player, thorns, fire
+from variables import menuFundo, telas, start, options, leave, start1, options1, leave1
+from variables import personagem
 
 def escapeQuestMenu():
     global state
@@ -27,20 +27,33 @@ def escapeQuestMenu():
 
 def escapeQuestGame():
     global state
+    vel_personagem = 400
+    i = 0
+
     while state == True:
         if key.key_pressed("ESC"):
-            return 
+            return
 
-        gameFundo.draw()
+        if key.key_pressed("RIGHT"):
+            personagem.set_sequence(0, 2, True)
+            personagem.update()
+            personagem.x += vel_personagem * window.delta_time()
+
+        if key.key_pressed("LEFT"):
+            personagem.set_sequence(2, 4, True)
+            personagem.update()
+            personagem.x -= vel_personagem * window.delta_time()
+
+        if personagem.x > window.width and i != 21:
+            personagem.x = 0
+            i += 1
+
+        if personagem.x < 0 and i != 0:
+            personagem.x = window.width
+            i -= 1
+
+        telas[i].draw()
         personagem.draw()
-        bowl_1.draw()
-        bowl_2.draw()
-        bowl_3.draw()
-        life_puzzle.draw()
-        life_player.draw()
-        thorns.draw()
-        fire.draw()
-        
         window.update()
 
 while state == True:
