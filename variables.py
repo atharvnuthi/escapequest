@@ -8,12 +8,13 @@ WIDTH, HEIGHT = 1300, 650
 window = Window(WIDTH, HEIGHT)
 window.set_title("Escape Quest")
 
-keyboard = Keyboard()
+key = Keyboard()
 mouse = Mouse()
+state = True
 
 #Menu
-menu = GameImage("assets/images/menu.png")
-fundo_game = GameImage("assets/images/fundo_jogo.png")
+menuFundo = GameImage("assets/images/menu.png")
+gameFundo = GameImage("assets/images/jogo.png")
 
 start = Sprite("assets/images/buttons/start.png")
 options = Sprite("assets/images/buttons/options.png")
@@ -29,6 +30,7 @@ start1.set_position((window.width-start1.width)/2, 180)
 options1.set_position((window.width-options1.width)/2, 260)
 leave1.set_position((window.width-leave1.width)/2, 340)
 
+#Objects
 personagem_inicio = Sprite("assets/images/objects/cientista_inicio.png")
 personagem_inicio.set_position((window.width - personagem_inicio.width) / 2, 430)
 personagem = Sprite("assets/images/objects/cientista_jogo.png")
@@ -49,5 +51,6 @@ life_player.set_position(window.width - life_player.width - 30, 10)
 
 thorns = Sprite("assets/images/objects/espinho.png")
 thorns.set_position(window.width / 2 + 200, window.height - thorns.height)
+
 fire = Sprite("assets/images/objects/fogo.png")
 fire.set_position(300, window.height - fire.height)
