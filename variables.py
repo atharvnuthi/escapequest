@@ -13,13 +13,17 @@ key = Keyboard()
 mouse = Mouse()
 state = True
 telas = []
+numCenas = 17
+dificuldade = 2 #1 - easy, 2 - medium, 3 - hard
+som = True
 
-for i in range(20):
-    fundo = GameImage("assets/images/backgrounds/" + str(i+2) + ".png")
+#Game
+for i in range(numCenas):
+    fundo = GameImage("assets/images/backgrounds/" + str(i+1) + ".png")
     telas.append(fundo)
 
 #Menu
-menuFundo = GameImage("assets/images/backgrounds/menu.png")
+menuFundo = GameImage("assets/images/backgrounds/menu1.png")
 
 start = Sprite("assets/images/buttons/start.png")
 options = Sprite("assets/images/buttons/options.png")
@@ -28,14 +32,36 @@ start.set_position((window.width-start.width)/2, 180)
 options.set_position((window.width-options.width)/2, 260)
 leave.set_position((window.width-leave.width)/2, 340)
 
-start1 = Sprite("assets/images/buttons/start_pink.png")
-options1 = Sprite("assets/images/buttons/options_pink.png")
-leave1 = Sprite("assets/images/buttons/leave_pink.png")
+start1 = Sprite("assets/images/buttons/bStart.png")
+options1 = Sprite("assets/images/buttons/bOptions.png")
+leave1 = Sprite("assets/images/buttons/bLeave.png")
 start1.set_position((window.width-start1.width)/2, 180)
 options1.set_position((window.width-options1.width)/2, 260)
 leave1.set_position((window.width-leave1.width)/2, 340)
 
+#Options 
+optionsFundo = Sprite("assets/images/backgrounds/options.png")
+
+soundOn = Sprite("assets/images/buttons/soundOn.png")
+soundOn.set_position(window.width/2 - soundOn.width/2 + 150, window.height/2 - soundOn.height/2 - 80)
+soundOff = Sprite("assets/images/buttons/soundOff.png")
+soundOff.set_position(window.width/2 - soundOff.width/2 + 150, window.height/2 - soundOff.height/2 + 20)
+
+easy = Sprite('assets/images/buttons/easy.png')
+easy1 = Sprite('assets/images/buttons/bEasy.png')
+easy.set_position(window.width/2 - easy.width/2 - 150, window.height/2 - easy.height/2 - 105)
+easy1.set_position(window.width/2 - easy1.width/2 - 150, window.height/2 - easy1.height/2 - 105)
+medium = Sprite('assets/images/buttons/medium.png')
+medium1 = Sprite('assets/images/buttons/bMedium.png')
+medium.set_position(window.width/2 - medium.width/2 - 150, window.height/2 - medium.height/2 - 30)
+medium1.set_position(window.width/2 - medium1.width/2 - 150, window.height/2 - medium1.height/2 - 30)
+hard = Sprite('assets/images/buttons/hard.png')
+hard1 = Sprite('assets/images/buttons/bHard.png')
+hard.set_position(window.width/2 - hard.width/2 - 150, window.height/2 - hard.height/2 + 45)
+hard1.set_position(window.width/2 - hard1.width/2 - 150, window.height/2 - hard1.height/2 + 45)
+
 #Objects
-personagem = Sprite("assets/images/objects/cientista_jogo.png", 4)
-personagem.set_position((window.width - personagem.width) / 2, window.height - personagem.height)
+personagem = Sprite("assets/images/objects/cientista_jogo_1.png", 4)
+personagem.set_position((window.width - personagem.width) / 2, window.height - personagem.height - 150)
 personagem.set_total_duration(800)
+velPersonagem = 500
