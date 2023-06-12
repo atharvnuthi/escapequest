@@ -3,7 +3,7 @@ from PPlay.keyboard import Keyboard
 from PPlay.mouse import Mouse
 from PPlay.gameimage import GameImage
 from PPlay.sprite import Sprite
-from PPlay.animation import *
+from random import *
 
 WIDTH, HEIGHT = 1300, 650
 window = Window(WIDTH, HEIGHT)
@@ -13,6 +13,8 @@ key = Keyboard()
 mouse = Mouse()
 state = True
 telas = []
+potes = []
+answer_attempts = []
 numCenas = 17
 dificuldade = 2 #1 - easy, 2 - medium, 3 - hard
 som = True
@@ -65,3 +67,28 @@ personagem = Sprite("assets/images/objects/cientista_jogo_1.png", 4)
 personagem.set_position((window.width - personagem.width) / 2, window.height - personagem.height - 150)
 personagem.set_total_duration(800)
 velPersonagem = 500
+
+# Recipientes
+for i in range(3):
+    pote = Sprite("assets/images/objects/pt" + str(i+1) + ".png")
+    potes.append(pote)
+    potes[i].set_position(randint(pote.width, window.width - pote.width), randint(350, 450))
+
+# Arquivo com as perguntas
+arq = open("assets/texts/questions.txt", "r", encoding="utf-8")
+lines_questions = arq.readlines()
+
+# # Arquivo com as respostas
+# arq_a = open("assets/texts/answers.txt")
+# lines_answers = arq_a.readlines()
+
+# Tentativas para responder
+for i in range(2):
+    vida = Sprite("assets/images/objects/life_puzzle.png")
+    vida.set_position(i*10 + (i+1)*vida.width - 15, window.height - vida.height - 10)
+    answer_attempts.append(vida)
+
+timer = Sprite("assets/images/objects/timer.png")
+timer.set_position(window.width - 100, window.height - 50)
+
+
