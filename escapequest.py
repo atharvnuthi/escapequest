@@ -1,9 +1,9 @@
 from variables import window, key, mouse, state, dificuldade, som
-from variables import menuFundo, start, options, leave, start1, options1, leave1
-from variables import soundOn, soundOff, easy, medium, hard, easy1, medium1, hard1, optionsFundo
+from variables import menuFundo, start, options, leave, start1, options1, leave1, strLevel, strSound
+from variables import soundOn, soundOff, soundOn1, soundOff1, easy, medium, hard, easy1, medium1, hard1, optionsFundo
 from variables import personagem, velPersonagem, telas, numCenas, potes
-from variables import lines_questions, answer_attempts, timer
-from random import *
+from variables import questions, answers, answerTries, timer
+from random import randint
 
 def escapeQuestMenu():
     global state
@@ -39,27 +39,26 @@ def escapeQuestGame():
         if key.key_pressed("ESC"):
             return
 
+        # Movimentação do personagem
         if key.key_pressed("RIGHT"):
             personagem.set_sequence(0, 2, True)
             personagem.update()
             personagem.x += velPersonagem * window.delta_time()
-
         if key.key_pressed("LEFT"):
             personagem.set_sequence(2, 4, True)
             personagem.update()
             personagem.x -= velPersonagem * window.delta_time()
 
+        # Condições para o personagem não sair da tela e para mudar de cena quando chegar no final da tela
         if personagem.x > window.width:
             personagem.x = 0
             i += 1
-
         if personagem.x < 0:
             if i != 0:
                 personagem.x = window.width
                 i -= 1
             elif i == 0:
                 personagem.x = 0   
-
         if i == numCenas:
             return
 
@@ -75,16 +74,16 @@ def escapeQuestGame():
 def escapeQuestQuestion():
     global state
 
-    op_letter = ["A - ", "B - ", "C - "]
+    op_letter = ["A - ", "B - ", "C - "] # Letras das opções das perguntas (A, B, C)
     already_used = [] # Guarda os indices das perguntas que já foram usadas
-    index = randint(0, len(lines_questions) - 1)
+    index = randint(0, len(questions) - 1)
     aux = 11
 
     if index in already_used:
-        index = randint(0, len(lines_questions) - 1)
+        index = randint(0, len(questions) - 1)
     else:
         already_used.append(index)
-        split_q = lines_questions[index].split("? ")
+        split_q = questions[index].split("? ")
         phrase = split_q[0] + "?"
         opcoes = split_q[1].split(",")
 
@@ -96,7 +95,7 @@ def escapeQuestQuestion():
         B = window.draw_text(op_letter[1] + opcoes[1], x=window.width / 2 - 75, y=30*1+240, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
         C = window.draw_text(op_letter[2] + opcoes[2], x=window.width / 2 - 75, y=30*2+240, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
 
-        for i in answer_attempts:
+        for i in answerTries:
             i.draw()
 
         aux -= 0.75 * window.delta_time()
@@ -109,9 +108,19 @@ def escapeQuestQuestion():
 
         window.update()
 
+def escapeQuestWin():
+    global state
+
+    while state == True:
+        if key.key_pressed("ESC"):
+            escapeQuestMenu()
+        
+
+        
 
 def escapeQuestOptions():
-    global dificuldade, som, state
+    global state, dificuldade, som
+    global strSound, strLevel
 
     while state == True:
         if key.key_pressed("ESC"):
@@ -128,25 +137,34 @@ def escapeQuestOptions():
             easy1.draw()
             if mouse.is_button_pressed(1):
                 dificuldade = 1
+                strLevel = "Easy"
         
         if mouse.is_over_object(medium):
             medium1.draw()
             if mouse.is_button_pressed(1):
                 dificuldade = 2
+                strLevel = "Medium"
             
         if mouse.is_over_object(hard):
             hard1.draw()
             if mouse.is_button_pressed(1):
                 dificuldade = 3
+                strLevel = "Hard"
         
         if mouse.is_over_object(soundOn):
+            soundOn1.draw()
             if mouse.is_button_pressed(1):
                 som = True
+                strSound = "On"
         
         if mouse.is_over_object(soundOff):
+            soundOff1.draw()
             if mouse.is_button_pressed(1):
                 som = False
-
+                strSound = "Off"
+        
+        window.draw_text("Level: {}".format(strLevel), x=window.width - 200, y=window.height - 75, size=20, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
+        window.draw_text("Sound: {}".format(strSound), x=window.width - 200, y=window.height - 50, size=20, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
         window.update()
 
 
