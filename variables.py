@@ -12,16 +12,15 @@ window.set_title("Escape Quest")
 key = Keyboard()
 mouse = Mouse()
 state = True
-numCenas = 17
+numCenas = 1
+iCena = 0
 numPotes = 3
-dificuldade = 2 #1 - easy, 2 - medium, 3 - hard
 som = True
 strLevel = "Medium"
 strSound = "On"
 
 telas = [] #Lista com as imagens de fundo das cenas
 potes = [] #Lista com os recipientes
-answerTries = [] #Lista com as tentativas para responder
 
 #Game Backgrounds
 for i in range(numCenas):
@@ -87,13 +86,18 @@ aFile = open("assets/texts/answers.txt", "r", encoding="utf-8")
 answers = aFile.readlines()
 
 #Tentativas para Responder
-for i in range(2):
+triesImg = [] #Lista com as tentativas para responder
+triesLeft = 2
+for i in range(triesLeft):
     vida = Sprite("assets/images/objects/life_puzzle.png")
     vida.set_position(i*10 + (i+1)*vida.width - 15, window.height - vida.height - 10)
-    answerTries.append(vida)
+    triesImg.append(vida)
 
 #Timer para Responder
 timer = Sprite("assets/images/objects/timer.png")
 timer.set_position(window.width - 100, window.height - 50)
 
-
+#Perguntas/Respostas
+optionLetters = ["A - ", "B - ", "C - "] # Letras das opções das perguntas (A, B, C)
+usedQuestions = [] # Guarda os indices das perguntas que já foram usadas
+qTimeAux = 11 
