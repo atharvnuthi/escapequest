@@ -1,8 +1,8 @@
 from variables import window, key, mouse, state, som
 from variables import menuFundo, start, options, leave, start1, options1, leave1, strLevel, strSound
 from variables import soundOn, soundOff, soundOn1, soundOff1, easy, medium, hard, easy1, medium1, hard1, optionsFundo
-from variables import personagem, velPersonagem, telas, numCenas, potes, iCena
-from variables import questions, answers, triesImg, timer, optionLetters, usedQuestions, qTimeAux, triesLeft
+from variables import personagem, velPersonagem, telas, numCenas, potes, iCena, pp1, pp2, pp3, pi1, pi2, pi3
+from variables import questions, answers, triesImg, timer, optionLetters, usedQuestions, qTimeAux
 from random import randint
 
 def escapeQuestMenu():
@@ -30,8 +30,14 @@ def escapeQuestMenu():
         
         window.update()
 
+def escapeQuestUtil(pp, pi, iCena, potes, personagem):
+    if iCena == pi:
+        potes[pp].draw()
+        if personagem.collided(potes[pp]):
+            escapeQuestQuestion()
+
 def escapeQuestGame():
-    global state, iCena
+    global state, iCena, potes, pi1, pi2, pi3, pp1, pp2, pp3
     pIndex = randint(0, 2)
 
     while state == True:
@@ -57,22 +63,24 @@ def escapeQuestGame():
                 personagem.x = window.width
                 iCena -= 1
             elif iCena == 0:
-                personagem.x = 0   
-
-        if potes[pIndex].collided(personagem):
-            escapeQuestQuestion()
+                personagem.x = 0 
 
         if iCena == numCenas:
-            window.draw_text("Yay!!!", x=window.width/2, y=window.height/2, size=150, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
-            personagem.hide()
+            window.draw_text("Yay, you won!!!", x=window.width/2, y=window.height/2, size=150, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
+            personagem.hide()  
+
         if iCena < numCenas:
-            telas[iCena].draw()
-        potes[pIndex].draw()
+            telas[iCena].draw() 
+        
+        escapeQuestUtil(pp1, pi1, iCena, potes, personagem)
+        escapeQuestUtil(pp2, pi2, iCena, potes, personagem)
+        escapeQuestUtil(pp3, pi3, iCena, potes, personagem)
+
         personagem.draw()
         window.update()
 
 def escapeQuestQuestion():
-    global state, questions, answers, usedQuestions, optionLetters, qTimeAux, triesLeft
+    global state, questions, answers, usedQuestions, optionLetters, qTimeAux
     
     qIndex = randint(0, len(questions) - 1)
     qSplit = questions[qIndex].split("? ")

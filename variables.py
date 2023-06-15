@@ -3,7 +3,7 @@ from PPlay.keyboard import Keyboard
 from PPlay.mouse import Mouse
 from PPlay.gameimage import GameImage
 from PPlay.sprite import Sprite
-from random import *
+from random import randint, sample
 
 WIDTH, HEIGHT = 1300, 650
 window = Window(WIDTH, HEIGHT)
@@ -12,7 +12,7 @@ window.set_title("Escape Quest")
 key = Keyboard()
 mouse = Mouse()
 state = True
-numCenas = 1
+numCenas = 17
 iCena = 0
 numPotes = 3
 som = True
@@ -77,6 +77,11 @@ for i in range(numPotes):
     potes.append(pote)
     potes[i].set_position(randint(pote.width, window.width - pote.width), randint(350, 450))
 
+pp1, pp2, pp3 = sample(range(0, numCenas-1), 3)
+print(pp1, pp2, pp3)
+pi1, pi2, pi3 = sample(range(0, numPotes-1), 3)
+print(pi1, pi2, pi3)
+
 #Arquivo com as Perguntas
 qFile = open("assets/texts/questions.txt", "r", encoding="utf-8")
 questions = qFile.readlines()
@@ -85,7 +90,7 @@ questions = qFile.readlines()
 aFile = open("assets/texts/answers.txt", "r", encoding="utf-8")
 answers = aFile.readlines()
 
-#Tentativas para Responder
+#Tentativas, Timer
 triesImg = [] #Lista com as tentativas para responder
 triesLeft = 2
 for i in range(triesLeft):
@@ -93,11 +98,10 @@ for i in range(triesLeft):
     vida.set_position(i*10 + (i+1)*vida.width - 15, window.height - vida.height - 10)
     triesImg.append(vida)
 
-#Timer para Responder
 timer = Sprite("assets/images/objects/timer.png")
 timer.set_position(window.width - 100, window.height - 50)
+qTimeAux = 11
 
 #Perguntas/Respostas
 optionLetters = ["A - ", "B - ", "C - "] # Letras das opções das perguntas (A, B, C)
 usedQuestions = [] # Guarda os indices das perguntas que já foram usadas
-qTimeAux = 11 
