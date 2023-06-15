@@ -12,17 +12,15 @@ window.set_title("Escape Quest")
 key = Keyboard()
 mouse = Mouse()
 state = True
-numCenas = 17
 iCena = 0
-numPotes = 3
 som = True
-strLevel = "Medium"
-strSound = "On"
-
-telas = [] #Lista com as imagens de fundo das cenas
-potes = [] #Lista com os recipientes
+strLevel = "Medium" #Easy/Medium/Hard
+strSound = "On" #On/Off
+gameRun = True
 
 #Game Backgrounds
+numCenas = 17
+telas = [] #Lista com as imagens de fundo das cenas
 for i in range(numCenas):
     fundo = GameImage("assets/images/backgrounds/" + str(i+1) + ".png")
     telas.append(fundo)
@@ -72,23 +70,37 @@ personagem.set_total_duration(800)
 velPersonagem = 500
 
 #Recipientes
+potes = [] #Lista com os recipientes
+numPotes = 3
 for i in range(numPotes):
     pote = Sprite("assets/images/objects/pt" + str(i+1) + ".png")
     potes.append(pote)
     potes[i].set_position(randint(pote.width, window.width - pote.width), randint(350, 450))
 
-pp1, pp2, pp3 = sample(range(0, numCenas-1), 3)
-print(pp1, pp2, pp3)
-pi1, pi2, pi3 = sample(range(0, numPotes-1), 3)
-print(pi1, pi2, pi3)
+pp1, pp2, pp3 = sample(range(0, numCenas), 3)
+pi1, pi2, pi3 = sample(range(0, numPotes), 3)
+pp = [pp1, pp2, pp3] #Lista com os indices das cenas que terão os recipientes
+pi = [pi1, pi2, pi3] #Lista com os indices dos recipientes que estarão nas cenas
 
-#Arquivo com as Perguntas
+#Arquivo com as Perguntas e Respostas
 qFile = open("assets/texts/questions.txt", "r", encoding="utf-8")
 questions = qFile.readlines()
-
-#Arquivo com as Respostas
 aFile = open("assets/texts/answers.txt", "r", encoding="utf-8")
 answers = aFile.readlines()
+
+for i in range(len(answers)):
+    answers[i] = answers[i].split("\n")[0] #Remove o \n do final da linha
+
+qOptions = [] #Lista com as opções de resposta das perguntas
+qPhrases = [] #Lista com as perguntas
+for i in range(len(questions)): #Separa as perguntas das opções de resposta e guarda em listas diferentes (qPhrases e qOptions)
+    qSplit = questions[i].split("? ")
+    qPhrases.append(qSplit[0]+"?")
+    qOption = qSplit[1].split(",")
+    qOptions.append(qOption)
+
+q1, q2, q3 = sample(range(0, len(questions)), 3)
+qChoices = [q1, q2, q3] #Lista com os indices das perguntas que serão feitas
 
 #Tentativas, Timer
 triesImg = [] #Lista com as tentativas para responder
@@ -104,4 +116,3 @@ qTimeAux = 11
 
 #Perguntas/Respostas
 optionLetters = ["A - ", "B - ", "C - "] # Letras das opções das perguntas (A, B, C)
-usedQuestions = [] # Guarda os indices das perguntas que já foram usadas

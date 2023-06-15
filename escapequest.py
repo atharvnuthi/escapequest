@@ -1,9 +1,20 @@
-from variables import window, key, mouse, state, som
+from variables import window, key, mouse, state, som, gameRun
 from variables import menuFundo, start, options, leave, start1, options1, leave1, strLevel, strSound
 from variables import soundOn, soundOff, soundOn1, soundOff1, easy, medium, hard, easy1, medium1, hard1, optionsFundo
-from variables import personagem, velPersonagem, telas, numCenas, potes, iCena, pp1, pp2, pp3, pi1, pi2, pi3
-from variables import questions, answers, triesImg, timer, optionLetters, usedQuestions, qTimeAux
-from random import randint
+from variables import personagem, velPersonagem, telas, numCenas, potes, iCena, pp, pi, numPotes
+from variables import questions, answers, optionLetters, qTimeAux, qOptions, qPhrases, qChoices, triesImg, timer
+
+def escapeUtilResetGame(gR, iC):
+    global gameRun, iCena, personagem
+    iCena = iC
+    gameRun = gR
+    personagem.set_position((window.width - personagem.width) / 2, window.height - personagem.height - 150)
+
+def escapeUtilPotes(pp, pi, iCena, potes, personagem):
+    if iCena == pp:
+        potes[pi].draw()
+        if personagem.collided(potes[pi]):
+            escapeQuestQuestion(pi)
 
 def escapeQuestMenu():
     global state
@@ -16,6 +27,7 @@ def escapeQuestMenu():
         if mouse.is_over_object(start):
             start1.draw()
             if mouse.is_button_pressed(1):
+                escapeUtilResetGame(True, 0)
                 escapeQuestGame()
 
         if mouse.is_over_object(options):
@@ -30,19 +42,12 @@ def escapeQuestMenu():
         
         window.update()
 
-def escapeQuestUtil(pp, pi, iCena, potes, personagem):
-    if iCena == pi:
-        potes[pp].draw()
-        if personagem.collided(potes[pp]):
-            escapeQuestQuestion()
-
 def escapeQuestGame():
-    global state, iCena, potes, pi1, pi2, pi3, pp1, pp2, pp3
-    pIndex = randint(0, 2)
+    global iCena, potes, pp, pi, gameRun
 
-    while state == True:
+    while gameRun == True:
         if key.key_pressed("ESC"):
-            return
+            escapeUtilResetGame(False, 0)
 
         # Movimentação do personagem
         if key.key_pressed("RIGHT"):
@@ -66,58 +71,40 @@ def escapeQuestGame():
                 personagem.x = 0 
 
         if iCena == numCenas:
-            window.draw_text("Yay, you won!!!", x=window.width/2, y=window.height/2, size=150, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
-            personagem.hide()  
+            escapeUtilResetGame(False, 0)
+            escapeQuestWinner()
 
         if iCena < numCenas:
             telas[iCena].draw() 
         
-        escapeQuestUtil(pp1, pi1, iCena, potes, personagem)
-        escapeQuestUtil(pp2, pi2, iCena, potes, personagem)
-        escapeQuestUtil(pp3, pi3, iCena, potes, personagem)
+        for i in range(numPotes):
+            escapeUtilPotes(pp[i], pi[i], iCena, potes, personagem)
 
         personagem.draw()
         window.update()
 
-def escapeQuestQuestion():
-    global state, questions, answers, usedQuestions, optionLetters, qTimeAux
-    
-    qIndex = randint(0, len(questions) - 1)
-    qSplit = questions[qIndex].split("? ")
-    qPhrase = qSplit[0] + "?"
-    qOptions = qSplit[1].split(",")
-    tries = []
-
-    if qIndex in usedQuestions:
-        qIndex = randint(0, len(questions) - 1)
-    else:
-        usedQuestions.append(qIndex)
-        qSplit = questions[qIndex].split("? ")
-        qPhrase = qSplit[0] + "?"
-        qOptions = qSplit[1].split(",")
-
-    while state == True:
-        if qTimeAux <= 0:
-            return
+def escapeQuestWinner():
+    while True:
         if key.key_pressed("ESC"):
+            return
+        
+        window.set_background_color((0, 0, 0))
+        window.draw_text("Yay, you won!!!", x=window.width/2, y=window.height/2, size=50, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
+        window.update()
+
+def escapeQuestQuestion(pi):
+    global qTimeAux
+    
+    while True:
+        if qTimeAux <= 9:
             return
         qTimeAux -= 0.75 * window.delta_time()
 
-        if key.key_pressed("A"):
-            if qOptions[0] == answers[qIndex]:
-                return
-        if key.key_pressed("B"):
-            if qOptions[1] == answers[qIndex]:
-                return
-        if key.key_pressed("C"):
-            if qOptions[2] == answers[qIndex]:
-                return
-
         window.set_background_color((0, 0, 0))
-        window.draw_text(qPhrase, x=window.width / 2 - 290, y=180, size=26, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
-        A = window.draw_text(optionLetters[0] + qOptions[0], x=window.width / 2 - 75, y=30*0+240, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
-        B = window.draw_text(optionLetters[1] + qOptions[1], x=window.width / 2 - 75, y=30*1+240, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
-        C = window.draw_text(optionLetters[2] + qOptions[2], x=window.width / 2 - 75, y=30*2+240, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+        window.draw_text(qPhrases[qChoices[pi]], x=window.width / 2 - 290, y=180, size=26, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+        window.draw_text(optionLetters[0] + qOptions[pi][0], x=window.width / 2 - 75, y=30*0+240, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+        window.draw_text(optionLetters[1] + qOptions[pi][1], x=window.width / 2 - 75, y=30*1+240, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+        window.draw_text(optionLetters[2] + qOptions[pi][2], x=window.width / 2 - 75, y=30*2+240, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
         window.draw_text(str(int(qTimeAux)), x=window.width - 60, y=window.height - 40, size=20, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
         
         for i in triesImg:
@@ -126,10 +113,10 @@ def escapeQuestQuestion():
         window.update()
 
 def escapeQuestOptions():
-    global state, som, velPersonagem
+    global som, velPersonagem
     global strSound, strLevel
 
-    while state == True:
+    while True:
         if key.key_pressed("ESC"):
             return
         
