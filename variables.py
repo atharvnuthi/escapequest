@@ -19,7 +19,7 @@ strSound = "On" #On/Off
 gameRun = True
 
 #Game Backgrounds
-numCenas = 17
+numCenas = 3
 telas = [] #Lista com as imagens de fundo das cenas
 for i in range(numCenas):
     fundo = GameImage("assets/images/backgrounds/" + str(i+1) + ".png")
@@ -79,8 +79,10 @@ for i in range(numPotes):
 
 pp1, pp2, pp3 = sample(range(0, numCenas), 3)
 pi1, pi2, pi3 = sample(range(0, numPotes), 3)
-pp = [pp1, pp2, pp3] #Lista com os indices das cenas que terão os recipientes
-pi = [pi1, pi2, pi3] #Lista com os indices dos recipientes que estarão nas cenas
+pCenas = [pp1, pp2, pp3] #Lista com os indices das cenas que terão os recipientes
+print(pCenas)
+pIndexes = [pi1, pi2, pi3] #Lista com os indices dos recipientes que estarão nas cenas
+print(pIndexes)
 
 #Arquivo com as Perguntas e Respostas
 qFile = open("assets/texts/questions.txt", "r", encoding="utf-8")
@@ -101,10 +103,13 @@ for i in range(len(questions)): #Separa as perguntas das opções de resposta e 
 
 q1, q2, q3 = sample(range(0, len(questions)), 3)
 qChoices = [q1, q2, q3] #Lista com os indices das perguntas que serão feitas
+qDone = []
 
 #Tentativas, Timer
 triesImg = [] #Lista com as tentativas para responder
 triesLeft = 2
+qAnswered = 0
+
 for i in range(triesLeft):
     vida = Sprite("assets/images/objects/life_puzzle.png")
     vida.set_position(i*10 + (i+1)*vida.width - 15, window.height - vida.height - 10)
