@@ -1,9 +1,9 @@
+from random import *
 from variables import window, key, mouse, state, som, gameRun
 from variables import menuFundo, start, options, leave, start1, options1, leave1, strLevel, strSound
 from variables import soundOn, soundOff, soundOn1, soundOff1, easy, medium, hard, easy1, medium1, hard1, optionsFundo
 from variables import personagem, velPersonagem, telas, numCenas, potes, iCena, pCenas, pIndexes, numPotes
-from variables import questions, answers, optionLetters, qTimeAux, qOptions, qPhrases, triesImg, timer, qChoices, qDone, triesLeft, qAnswered 
-from random import sample
+from variables import questions, answers, optionLetters, qTimeAux, qTimeAuxB, qOptions, qPhrases, triesImg, phrasesW, timer, qDone, qAnswered, qTotal
 
 def escapeUtilResetGame(gR, iC):
     global gameRun, iCena, personagem
@@ -70,14 +70,13 @@ def escapeQuestGame():
             escapeQuestWinner()
 
         if iCena < numCenas:
-            telas[iCena].draw() 
+            telas[iCena].draw()
         
         for i in range(numPotes):
             if iCena == pCenas[i] & i not in qDone:
                 potes[pIndexes[i]].draw()
                 if personagem.collided(potes[pIndexes[i]]):
-                    tA = qTimeAux
-                    escapeQuestQuestion(i, tA)
+                    escapeQuestQuestion()
                     potes[pIndexes[i]].hide()
 
         personagem.draw()
@@ -92,43 +91,107 @@ def escapeQuestWinner():
         window.draw_text("Yay, you won!!!", x=window.width/2, y=window.height/2, size=50, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
         window.update()
 
-def escapeQuestQuestion(i, tA):
+def escapeQuestQuestion():
     global qDone
-    qIndex = qChoices[i]
+
+    # Verifica se a pergunta já foi feita
+    qIndex = randint(0, len(questions) - 1)
+
+    if qIndex in qDone:
+        qIndex = randint(0, len(questions) - 1)
+    else:
+        qDone.append(qIndex)
+
+    qTotal[0] += 1
+    tA = qTimeAux  # Tempo para responder a pergunta
+    tBack = qTimeAuxB  # Tempo para redirecionar a tela quando acertar ou perder as tentativas
+    aux = True
+    aux_2 = True
+
     while True:
-        if tA <= 9: #está dando um erro, por não fechar a janela de questões, e reiniciar o loop
-            qDone.append(i)
-            #triesLeft-=1
-            return
-        if key.key_pressed("A"):
-            if answers[qIndex] == qOptions[qIndex][0]:
-                qDone.append(i)
-                #qAnswered+=1
-                return
-        if key.key_pressed("B"):
-            if answers[qIndex] == qOptions[qIndex][1]:
-                qDone.append(i)
-                #qAnswered+=1
-                return 
-        if key.key_pressed("C"):
-            if answers[qIndex] == qOptions[qIndex][2]:
-                qDone.append(i)
-                #qAnswered+=1
-                return
-        
+        # Verifica se possui tentativas
+        if len(triesImg) > 0 and qTotal[0] <= 5:
+            tA -= 1.1 * window.delta_time()
 
-        tA -= 0.75 * window.delta_time()
+            window.set_background_color((0, 0, 0))
+            window.draw_text(qPhrases[qIndex], x=(window.width - (len(qPhrases[qIndex]) * 15.6)) / 2, y=200, size=26, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+            window.draw_text(optionLetters[0] + qOptions[qIndex][0], x=(window.width - (len(qOptions[qIndex][0]) * 15)) / 2, y=260, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+            window.draw_text(optionLetters[1] + qOptions[qIndex][1], x=(window.width - (len(qOptions[qIndex][0]) * 15)) / 2, y=290, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+            window.draw_text(optionLetters[2] + qOptions[qIndex][2], x=(window.width - (len(qOptions[qIndex][0]) * 15)) / 2, y=320, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+            window.draw_text(str(int(tA)), x=window.width - 60, y=window.height - 40, size=25, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
 
-        window.set_background_color((0, 0, 0))
-        window.draw_text(qPhrases[qIndex], x=window.width / 2 - 290, y=180, size=26, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
-        window.draw_text(optionLetters[0] + qOptions[qIndex][0], x=window.width / 2 - 75, y=30*0+240, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
-        window.draw_text(optionLetters[1] + qOptions[qIndex][1], x=window.width / 2 - 75, y=30*1+240, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
-        window.draw_text(optionLetters[2] + qOptions[qIndex][2], x=window.width / 2 - 75, y=30*2+240, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
-        window.draw_text(str(int(tA)), x=window.width - 60, y=window.height - 40, size=20, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
-        
-        for i in triesImg:
-            i.draw()
-        timer.draw()
+            # Condição para o tempo de resposta
+            if tA <= 0 and aux == True:
+                triesImg.pop(len(triesImg) - 1)
+                aux = False
+
+            if key.key_pressed("A") and aux == True and aux_2 == True:
+                if answers[qIndex] == qOptions[qIndex][0]:
+                    aux_2 = False
+                    qAnswered[0] += 10
+                else:
+                    triesImg.pop(len(triesImg) - 1)
+                    aux = False
+
+            if key.key_pressed("B") and aux == True and aux_2 == True:
+                if answers[qIndex] == qOptions[qIndex][1]:
+                    aux_2 = False
+                    qAnswered[0] += 10
+                else:
+                    triesImg.pop(len(triesImg) - 1)
+                    aux = False
+
+            if key.key_pressed("C") and aux == True and aux_2 == True:
+                if answers[qIndex] == qOptions[qIndex][2]:
+                    aux_2 = False
+                    qAnswered[0] += 10
+                else:
+                    triesImg.pop(len(triesImg) - 1)
+                    aux = False
+
+            if key.key_pressed("A") == False and key.key_pressed("B") == False and key.key_pressed("C") == False:
+                # Se errar a pergunta, chama a função com uma nova pergunta
+                if aux == False:
+                    tBack -= 1 * window.delta_time()
+                    window.set_background_color((0, 0, 0))
+                    window.draw_text(phrasesW[2], x=(window.width / 2) - 180, y=window.height / 2, size=20, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+
+                    if tA <= 0:
+                        window.draw_text(phrasesW[1], x=(window.width / 2) - 130, y=window.height/2-60, size=30, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+                    else:
+                        window.draw_text(phrasesW[0], x=(window.width / 2) - 275, y=window.height/2-60, size=30, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+
+                    if tBack <= 0:
+                        aux = True
+                        escapeQuestQuestion()
+
+                # Se acertar, chama a função com uma nova pergunta
+                if aux_2 == False:
+                    aux_2 = True
+                    escapeQuestQuestion()
+
+            for i in triesImg:
+                i.draw()
+            timer.draw()
+
+        else:
+            tBack -= 1 * window.delta_time()
+            window.set_background_color((239, 111, 60))
+
+            if len(triesImg) == 0:
+                window.draw_text(phrasesW[3], x=window.width / 2 - 300, y=window.height/2 - 26, size=36, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
+            else:
+                window.draw_text(phrasesW[4], x=window.width / 2 - 110, y=window.height/2 - 86, size=36, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
+                window.draw_text("Acertou " + str(qAnswered[0]//10) + " repostas", x=window.width / 2 - 155, y=window.height/2 - 26, size=28, color=(255, 255, 255), font_name="monospace", bold=True, italic=False)
+                if qAnswered[0] == 50:
+                    window.draw_text(phrasesW[5], x=window.width / 2 - 135, y=window.height/2 + 16, size=28, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+                else:
+                    window.draw_text(phrasesW[6], x=window.width / 2 - 135, y=window.height/2 + 16, size=28, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+
+            window.draw_text("Redireciondano em " + str(int(tBack) + 1), x=20, y=window.height - 25, size=16, color=(255, 255, 255), font_name="monospace", bold=False, italic=False)
+            if tBack < 0:
+                escapeQuestGame()
+
         window.update()
 
 def escapeQuestOptions():
@@ -181,4 +244,5 @@ def escapeQuestOptions():
         window.update()
 
 while state == True:
-    escapeQuestMenu()
+    # escapeQuestMenu()
+    escapeQuestQuestion()

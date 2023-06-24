@@ -80,9 +80,7 @@ for i in range(numPotes):
 pp1, pp2, pp3 = sample(range(0, numCenas), 3)
 pi1, pi2, pi3 = sample(range(0, numPotes), 3)
 pCenas = [pp1, pp2, pp3] #Lista com os indices das cenas que terão os recipientes
-print(pCenas)
 pIndexes = [pi1, pi2, pi3] #Lista com os indices dos recipientes que estarão nas cenas
-print(pIndexes)
 
 #Arquivo com as Perguntas e Respostas
 qFile = open("assets/texts/questions.txt", "r", encoding="utf-8")
@@ -108,7 +106,8 @@ qDone = []
 #Tentativas, Timer
 triesImg = [] #Lista com as tentativas para responder
 triesLeft = 2
-qAnswered = 0
+qAnswered = [0] # Respostas corretas
+qTotal = [0] # Conta quantas perguntas foram gerada
 
 for i in range(triesLeft):
     vida = Sprite("assets/images/objects/life_puzzle.png")
@@ -118,6 +117,11 @@ for i in range(triesLeft):
 timer = Sprite("assets/images/objects/timer.png")
 timer.set_position(window.width - 100, window.height - 50)
 qTimeAux = 11
+qTimeAuxB = 3
 
 #Perguntas/Respostas
 optionLetters = ["A - ", "B - ", "C - "] # Letras das opções das perguntas (A, B, C)
+
+# Frases para quando trocar a pergunta ao errar
+phrasesW = ["Ops, sua resposta está incorreta!", "O tempo esgotou!", "Você ainda tem mais 1 tentativa!", "Oh não! Acabaram suas chances",
+            "Muito bem!", "Ganhou 10 pontos", "Ganhou 5 pontos"]
