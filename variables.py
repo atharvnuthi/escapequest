@@ -33,54 +33,43 @@ for i in range(numPotes):
     pote = Sprite("assets/images/objects/pt" + str(i+1) + ".png")
     potes.append(pote)
     potes[i].set_position(randint(pote.width, window.width - pote.width), randint(350, 450))
-
 pp1, pp2, pp3 = sample(range(0, numCenas), 3) #cenas que terão os recipientes
-pi1, pi2, pi3 = sample(range(0, numPotes), 3) #recipientes que estarão nas cenas
 pCenas = [pp1, pp2, pp3] #Lista com os indices das cenas que terão os recipientes
+pi1, pi2, pi3 = sample(range(0, numPotes), 3) #recipientes que estarão nas cenas
 pIndexes = [pi1, pi2, pi3] #Lista com os indices dos recipientes que estarão nas cenas
 
 #Arquivo com as Perguntas e Respostas
 qFile = open("assets/texts/questions.txt", "r", encoding="utf-8")
-questions = qFile.readlines()
+allQuestions = qFile.readlines()
 aFile = open("assets/texts/answers.txt", "r", encoding="utf-8")
-answers = aFile.readlines()
-for i in range(len(answers)):
-    answers[i] = answers[i].split("\n")[0] #Remove o \n do final da linha
+allAnswers = aFile.readlines()
+for i in range(len(allAnswers)):
+    allAnswers[i] = allAnswers[i].split("\n")[0] #Remove o \n do final da linha
 
-qQuestions = [] #Lista com as perguntas
-qOptions = [] #Lista com as opções
-for i in range(len(questions)): #Separa as perguntas das opções de resposta e guarda em listas diferentes (qQuestions e qOptions)
-    qSplit = questions[i].split("? ")
-    qQuestions.append(qSplit[0]+"?")
-    qOption = qSplit[1].split(",")
-    qOptions.append(qOption)
+textQuestions = [] #Lista com as perguntas
+textOptions = [] #Lista com as opções
+for i in range(len(allQuestions)): #Separa as perguntas das opções de resposta e guarda em listas diferentes (textQuestions e textOptions)
+    qSplit = allQuestions[i].split("? ")
+    textQuestions.append(qSplit[0]+"?")
+    textOptions.append(qSplit[1].split(","))
 
-q1, q2, q3 = sample(range(0, len(questions)), 3)
+optionLetters = ["A - ", "B - ", "C - "] # Letras das opções das perguntas (A, B, C)
+phrasesW = ["Ops, sua resposta está incorreta!", "O tempo esgotou!", "Muito bem!", "Ganhou 10 pontos!"]
+
+q1, q2, q3 = sample(range(0, len(allQuestions)), 3)
 qChoices = [q1, q2, q3] #Lista com os indices das perguntas que serão feitas
-qDone = [] #Lista com os indices das perguntas que já foram feitas
 
-#Tentativas, Timer
-triesImg = [] #Lista com as tentativas para responder
-triesLeft = 2
-qAnswered = 0 # Respostas corretas
-qTotal = 0 # Conta quantas perguntas foram geradas
-
-for i in range(triesLeft):
-    vida = Sprite("assets/images/objects/life_puzzle.png")
-    vida.set_position(i*10 + (i+1)*vida.width - 15, window.height - vida.height - 10)
-    triesImg.append(vida)
+# qLifesImg = [] #Lista com as tentativas para responder
+# triesLeft = 2
+# for i in range(triesLeft):
+#     qLifes = Sprite("assets/images/objects/life_puzzle.png")
+#     qLifes.set_position(i*10 + (i+1)*qLifes.width - 15, window.height - qLifes.height - 10)
+#     qLifesImg.append(qLifes)
 
 timer = Sprite("assets/images/objects/timer.png")
 timer.set_position(window.width - 100, window.height - 50)
-qTime = 11
-qRedirect = 3
-
-#Perguntas/Respostas
-optionLetters = ["A - ", "B - ", "C - "] # Letras das opções das perguntas (A, B, C)
-
-# Frases para quando trocar a pergunta ao errar
-phrasesW = ["Ops, sua resposta está incorreta!", "O tempo esgotou!", "Você ainda tem mais 1 tentativa!", "Oh não! Acabaram suas chances",
-            "Muito bem!", "Ganhou 10 pontos", "Ganhou 5 pontos"]
+qTime = 11 
+# qRedirect = 3
 
 #Game Backgrounds
 telas = [] #Lista com as imagens de fundo das cenas
@@ -125,3 +114,6 @@ hard = Sprite('assets/images/buttons/hard.png')
 hard1 = Sprite('assets/images/buttons/bHard.png')
 hard.set_position(window.width/2 - hard.width/2 - 150, window.height/2 - hard.height/2 + 45)
 hard1.set_position(window.width/2 - hard1.width/2 - 150, window.height/2 - hard1.height/2 + 45)
+
+#for calculating points, health, etc. - to be implemented later on - after all logic is done
+qAnswered = 0 # Respostas corretas
