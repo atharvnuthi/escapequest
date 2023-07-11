@@ -18,7 +18,7 @@ som = True
 strLevel = "Medium" #Easy/Medium/Hard
 strSound = "On" #On/Off
 gameRun = True
-numCenas = 3
+numCenas = 4
 
 #Personagem Principal
 personagem = Sprite("assets/images/objects/cientista_jogo.png", 4)
@@ -37,6 +37,11 @@ pp1, pp2, pp3 = sample(range(0, numCenas), 3) #cenas que terão os recipientes
 pCenas = [pp1, pp2, pp3] #Lista com os indices das cenas que terão os recipientes
 pi1, pi2, pi3 = sample(range(0, numPotes), 3) #recipientes que estarão nas cenas
 pIndexes = [pi1, pi2, pi3] #Lista com os indices dos recipientes que estarão nas cenas
+
+#Obstacles
+demon = Sprite("assets/images/objects/demon.png")
+demon.set_position(randint(demon.width, window.width - demon.width), randint(350, 450))
+iDemon = randint(0, numCenas-1) #Cena que terá o obstáculo
 
 #Arquivo com as Perguntas e Respostas
 qFile = open("assets/texts/questions.txt", "r", encoding="utf-8")
@@ -58,13 +63,6 @@ phrasesW = ["Ops, sua resposta está incorreta!", "O tempo esgotou!", "Muito bem
 
 q1, q2, q3 = sample(range(0, len(allQuestions)), 3)
 qChoices = [q1, q2, q3] #Lista com os indices das perguntas que serão feitas
-
-# qLifesImg = [] #Lista com as tentativas para responder
-# triesLeft = 2
-# for i in range(triesLeft):
-#     qLifes = Sprite("assets/images/objects/life_puzzle.png")
-#     qLifes.set_position(i*10 + (i+1)*qLifes.width - 15, window.height - qLifes.height - 10)
-#     qLifesImg.append(qLifes)
 
 timer = Sprite("assets/images/objects/timer.png")
 timer.set_position(window.width - 100, window.height - 50)
@@ -117,3 +115,4 @@ hard1.set_position(window.width/2 - hard1.width/2 - 150, window.height/2 - hard1
 
 #for calculating points, health, etc. - to be implemented later on - after all logic is done
 qAnswered = 0 # Respostas corretas
+health = 100

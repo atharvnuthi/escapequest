@@ -3,8 +3,9 @@ from variables import window, key, mouse, state, som, gameRun, telas, numCenas, 
 from variables import menuFundo, start, options, leave, start1, options1, leave1 #menu
 from variables import soundOn, soundOff, soundOn1, soundOff1, easy, medium, hard, easy1, medium1, hard1, optionsFundo, strLevel, strSound #options
 from time import sleep #options
-from variables import personagem, velPersonagem #personagem
-from variables import potes, pCenas, pIndexes, allQuestions, allAnswers, optionLetters, qTime, textOptions, textQuestions, phrasesW, timer, qAnswered, qChoices #Q&A
+from variables import personagem, velPersonagem, demon, iDemon #personagem
+from variables import potes, pCenas, pIndexes, allQuestions, allAnswers, optionLetters, qTime, textOptions, textQuestions, phrasesW, timer, qChoices #Q&A
+from variables import qAnswered, health
 
 def escapeUtilResetGame(gR, iC):
     global gameRun, iCena, personagem
@@ -102,7 +103,14 @@ def escapeQuestQuestion():
     return
 
 def escapeQuestGame():
-    global gameRun, iCena, potes, pCenas, pIndexes, qChoices
+    global gameRun, iCena, potes, pCenas, pIndexes, qChoices, health, qAnswered, iDemon
+
+    # Define jump-related variables
+    isJump = False
+    initialJumpVel = -800  # Adjust this value to control the jump height
+    jumpVel = 0 
+    gravity = 2000
+    vertical_velocity = 800  # Adjust this value to control the vertical movement speed
 
     while gameRun == True:
         if key.key_pressed("ESC"):
@@ -118,6 +126,26 @@ def escapeQuestGame():
             personagem.update()
             personagem.x -= velPersonagem * window.delta_time()
 
+        # Gravity logic
+        if not isJump:
+            personagem.y += gravity * window.delta_time()
+
+            if personagem.y >= window.height - personagem.height - 150:
+                personagem.y = window.height - personagem.height - 150
+        # Jumping logic
+        if key.key_pressed("UP") and not isJump:
+            isJump = True
+            jumpVel = initialJumpVel
+        if isJump:
+            personagem.y += jumpVel * window.delta_time()
+            jumpVel += gravity * window.delta_time()
+            if personagem.y >= window.height - personagem.height - 150:
+                personagem.y = window.height - personagem.height - 150
+                isJump = False
+        # Down logic
+        if key.key_pressed("DOWN"):
+            personagem.y += vertical_velocity * window.delta_time()
+
         # Condições para o personagem não sair da tela e para mudar de cena quando chegar no final da tela
         if personagem.x > window.width:
             personagem.x = 0
@@ -129,7 +157,7 @@ def escapeQuestGame():
             elif iCena == 0:
                 personagem.x = 0 
 
-        if iCena == numCenas: #& qAnswered == numPotes
+        if iCena == numCenas:
             escapeQuestWinner()
             escapeUtilResetGame(False, 0)
             return
@@ -145,7 +173,10 @@ def escapeQuestGame():
                     potes[0].hide()
                     pCenas.remove(iCena)
                     potes.pop(0)
-
+                    
+        if iCena == iDemon:
+            demon.draw()
+            
         personagem.draw()
         window.update()
 
