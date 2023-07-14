@@ -39,10 +39,10 @@ demon = Sprite("assets/images/objects/demon.png")
 demon.set_position(randint(demon.width, window.width - demon.width), window.height - personagem.height - 150)
 
 obs_1 = Sprite("assets/images/objects/obs_1.png")
-obs_1.set_position(randint(obs_1.width, window.width - obs_1.width), window.height / 2 + 150)
+obs_1.set_position(randint(100, 1100), window.height / 2 + 150)
 
 obs_2 = Sprite("assets/images/objects/obs_2.png")
-obs_2.set_position(randint(obs_2.width, window.width - obs_2.width), obs_2.height)
+obs_2.set_position(20, obs_2.height)
 
 iObs_2, iObs_1, iDemon = 1, 3, 5
 
@@ -114,16 +114,18 @@ hard1 = Sprite('assets/images/buttons/bHard.png')
 hard.set_position(window.width/2 - hard.width/2 - 150, window.height/2 - hard.height/2 + 45)
 hard1.set_position(window.width/2 - hard1.width/2 - 150, window.height/2 - hard1.height/2 + 45)
 
-life = []
-for i in range(3):
-    vida = Sprite("assets/images/objects/life_puzzle.png")
-    vida.set_position(i * 10 + (i + 39) * vida.width, 30)
-    life.append(vida)
-
 tiro = Sprite("assets/images/objects/tiro_demon.png")
 tiro_nave = Sprite("assets/images/objects/tiro_nave.png")
 tiros_demon = []
 tiros_nave = []
+
+def gera_vida():
+    life = []
+    for i in range(3):
+        vida = Sprite("assets/images/objects/life_puzzle.png")
+        vida.set_position(i * 10 + (i + 39) * vida.width, 30)
+        life.append(vida)
+    return life
 
 def t():
     pCena = randint(0, numCenas - 1)

@@ -115,7 +115,7 @@ def escapeQuestGame():
     vel_demon = 75
     vel_nave = 200
     espaco_intervalo = 450
-    espaco_intervalo_2 = 800
+    espaco_intervalo_2 = 100
     rec_tiro_demon = 0
     rec_tiro_nave = 0
     acertou = False
@@ -124,6 +124,7 @@ def escapeQuestGame():
     f, q = t()
     inicio = True
     tTime = qTime
+    lifes = gera_vida()
 
     while gameRun == True:
         if inicio:
@@ -136,7 +137,6 @@ def escapeQuestGame():
                inicio = False
 
         else:
-
             rec_tiro_demon += window.delta_time() * 0.3
             rec_tiro_nave += window.delta_time() * 0.5
             demon.x += vel_demon * window.delta_time()
@@ -215,20 +215,21 @@ def escapeQuestGame():
                 obs_1.draw()
 
                 if personagem.collided(obs_1):
-                    life.pop(len(life) - 1)
+                    lifes.pop(len(lifes) - 1)
                     personagem.set_position(obs_1.x - obs_1.width - 100, window.height - personagem.height - 150)
                     acertou = True
 
             if iCena == iObs_2:
                 obs_2.draw()
 
-
                 # Verificar se o  ultrapassou o limite esquerdo do intervalo
-                if obs_2.x <= 0:
+                if obs_2.x <= obs_2.width + espaco_intervalo_2:
+                    obs_2.x = obs_2.width + espaco_intervalo_2
                     vel_nave *= -1
 
-                # Verificar se o  ultrapassou o limite direito do intervalo
-                if obs_2.x > window.width - obs_2.width + 10:
+                # Verificar se o obs_2 ultrapassou o limite direito do intervalo
+                if obs_2.x >= window.width - obs_2.width - espaco_intervalo_2:
+                    obs_2.x = window.width - obs_2.width - espaco_intervalo_2
                     vel_nave *= -1
 
                 if rec_tiro_nave > 0.9:
@@ -238,7 +239,7 @@ def escapeQuestGame():
 
                 for tiro_n in tiros_nave:
                     if tiro_n.collided(personagem):
-                        life.pop(len(life) - 1)
+                        lifes.pop(len(lifes) - 1)
                         tiros_nave.remove(tiro_n)
                         acertou = True
 
@@ -274,7 +275,7 @@ def escapeQuestGame():
 
                 for tir in tiros_demon:
                     if tir.collided(personagem):
-                        life.pop(len(life) - 1)
+                        lifes.pop(len(lifes) - 1)
                         tiros_demon.remove(tir)
                         acertou = True
 
@@ -299,7 +300,7 @@ def escapeQuestGame():
                 acertou = False
                 cont_piscar = 0
 
-            if pontos[0] >= 60 and len(life) > 0:
+            if pontos[0] >= 10 and len(lifes) > 0:
                 escapeQuestWinner()
                 escapeUtilResetGame(False, 0)
                 return
@@ -307,14 +308,14 @@ def escapeQuestGame():
 
             window.draw_text("Pontos: " + str(pontos[0]), x=25, y=35, font_name="monospace", size=25, color=(255, 255, 255),bold=True)
 
-            for vida in life:
+            for vida in lifes:
                 vida.draw()
 
             personagem.draw()
 
-            if len(life) == 0:
-                escapeUtilResetGame(False, 0)
+            if len(lifes) == 0:
                 escapeQuestLooser()
+                escapeUtilResetGame(False, 0)
 
         window.update()
 
