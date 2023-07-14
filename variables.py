@@ -18,7 +18,7 @@ som = True
 strLevel = "Medium" #Easy/Medium/Hard
 strSound = "On" #On/Off
 gameRun = True
-numCenas = 4
+numCenas = 6
 
 #Personagem Principal
 personagem = Sprite("assets/images/objects/cientista_jogo.png", 4)
@@ -32,16 +32,19 @@ numPotes = 3
 for i in range(numPotes):
     pote = Sprite("assets/images/objects/pt" + str(i+1) + ".png")
     potes.append(pote)
-    potes[i].set_position(randint(pote.width, window.width - pote.width), randint(350, 450))
-pp1, pp2, pp3 = sample(range(0, numCenas), 3) #cenas que terão os recipientes
-pCenas = [pp1, pp2, pp3] #Lista com os indices das cenas que terão os recipientes
-pi1, pi2, pi3 = sample(range(0, numPotes), 3) #recipientes que estarão nas cenas
-pIndexes = [pi1, pi2, pi3] #Lista com os indices dos recipientes que estarão nas cenas
+    potes[i].set_position(randint(100, 1100), randint(350, 450))
 
 #Obstacles
 demon = Sprite("assets/images/objects/demon.png")
-demon.set_position(randint(demon.width, window.width - demon.width), randint(350, 450))
-iDemon = randint(0, numCenas-1) #Cena que terá o obstáculo
+demon.set_position(randint(demon.width, window.width - demon.width), window.height - personagem.height - 150)
+
+obs_1 = Sprite("assets/images/objects/obs_1.png")
+obs_1.set_position(randint(obs_1.width, window.width - obs_1.width), window.height / 2 + 150)
+
+obs_2 = Sprite("assets/images/objects/obs_2.png")
+obs_2.set_position(randint(obs_2.width, window.width - obs_2.width), obs_2.height)
+
+iObs_2, iObs_1, iDemon = 1, 3, 5
 
 #Arquivo com as Perguntas e Respostas
 qFile = open("assets/texts/questions.txt", "r", encoding="utf-8")
@@ -59,10 +62,7 @@ for i in range(len(allQuestions)): #Separa as perguntas das opções de resposta
     textOptions.append(qSplit[1].split(","))
 
 optionLetters = ["A - ", "B - ", "C - "] # Letras das opções das perguntas (A, B, C)
-phrasesW = ["Ops, sua resposta está incorreta!", "O tempo esgotou!", "Muito bem!", "Ganhou 10 pontos!"]
-
-q1, q2, q3 = sample(range(0, len(allQuestions)), 3)
-qChoices = [q1, q2, q3] #Lista com os indices das perguntas que serão feitas
+phrasesW = ["Ops, sua resposta está incorreta!", "O tempo esgotou!", "Muito bem!", "Ganhou 10 pontos!", "Ajude o cientista a retornar para casa", "respondendo as perguntas e evitando os monstros!", "É necessário alcançar a pontução 60!"]
 
 timer = Sprite("assets/images/objects/timer.png")
 timer.set_position(window.width - 100, window.height - 50)
@@ -76,6 +76,7 @@ for i in range(numCenas):
     telas.append(fundo)
 menuFundo = GameImage("assets/images/backgrounds/menu.png")
 optionsFundo = Sprite("assets/images/backgrounds/options.png")
+finalFundo = Sprite("assets/images/backgrounds/finalizar.png")
 
 #Menu Buttons
 start = Sprite("assets/images/buttons/start.png")
@@ -113,6 +114,19 @@ hard1 = Sprite('assets/images/buttons/bHard.png')
 hard.set_position(window.width/2 - hard.width/2 - 150, window.height/2 - hard.height/2 + 45)
 hard1.set_position(window.width/2 - hard1.width/2 - 150, window.height/2 - hard1.height/2 + 45)
 
-#for calculating points, health, etc. - to be implemented later on - after all logic is done
-qAnswered = 0 # Respostas corretas
-health = 100
+life = []
+for i in range(3):
+    vida = Sprite("assets/images/objects/life_puzzle.png")
+    vida.set_position(i * 10 + (i + 39) * vida.width, 30)
+    life.append(vida)
+
+tiro = Sprite("assets/images/objects/tiro_demon.png")
+tiro_nave = Sprite("assets/images/objects/tiro_nave.png")
+tiros_demon = []
+tiros_nave = []
+
+def t():
+    pCena = randint(0, numCenas - 1)
+    pIndex = randint(0, numPotes - 1)
+
+    return pCena, pIndex
